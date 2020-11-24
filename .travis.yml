@@ -20,3 +20,21 @@ notifications:
     recipients:
       - ybchae0801@naver.com
   slack: miridih:63vC2SIecsMGvyJAjijHRhU2
+
+# deploy 명령어가 실행되기 전에 수행된다.
+# AWS CodeDploy는 Jar 파일을 인식하지 못하기 때문에 Jar 파일과 설정 파일들을 모아 압축해야한다.
+before_deploy:
+  - zip -r springboot2-study-jojoldu * # 프로젝트명
+  - mkdir -p deploy # Travis CI가 실행중인 위치에 deploy 디렉토리 생성
+  - mv miristudy-jojoldu.zip deploy/miristudy-jojoldu.zip # 압축한 zip 파일을 deploy 디렉토리로 이동
+
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: miristudy-jojoldu-build # S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private # zip 파일 접근을 private으로
+    local_dir: deploy # 여기서 지정한 디렉토리 위치의 파일들만 S3로 전송
+    wait-until-deployed: true
