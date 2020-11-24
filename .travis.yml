@@ -19,4 +19,4 @@ notifications:
   email:
     recipients:
       - ybchae0801@naver.com
-
+  slack: miridih:63vC2SIecsMGvyJAjijHRhU2
