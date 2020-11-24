@@ -26,7 +26,7 @@ notifications:
 before_deploy:
   - zip -r springboot2-study-jojoldu * # 프로젝트명
   - mkdir -p deploy # Travis CI가 실행중인 위치에 deploy 디렉토리 생성
-  - mv miristudy-jojoldu.zip deploy/miristudy-jojoldu.zip # 압축한 zip 파일을 deploy 디렉토리로 이동
+  - mv springboot2-study-jojoldu.zip deploy/springboot2-study-jojoldu.zip # 압축한 zip 파일을 deploy 디렉토리로 이동
 
 deploy:
   - provider: s3
@@ -37,4 +37,14 @@ deploy:
     skip_cleanup: true
     acl: private # zip 파일 접근을 private으로
     local_dir: deploy # 여기서 지정한 디렉토리 위치의 파일들만 S3로 전송
+    wait-until-deployed: true
+  - provider: codedeploy
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+    bucket: miristudy-jojoldu-build # S3 버킷
+    key: springboot2-study-jojoldu.zip
+    bundle_type: zip
+    application: miristudy-jojoldu # CodeDeploy Application name
+    deployment_group: miristudy-jojoldu-group
+    region: ap-northeast-2
     wait-until-deployed: true
